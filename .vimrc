@@ -1,10 +1,15 @@
 set nocompatible              " be iMproved, required
-filetype plugin on
-set guifont=Ubuntu\ Mono\ Regular\ 15
+set guifont=Ubuntu\ Mono\ Regular\ 17
 set guioptions-=m
 set guioptions-=T
 set noeb vb t_vb=             " set visual bell, no error bell t_vb = nothing
 "filetype off                  " required
+
+set nobackup
+set swapfile
+set dir=~/tmp
+set nowritebackup
+set cursorline
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -25,12 +30,15 @@ Plugin 'jiangmiao/auto-pairs'
 Plugin 'rhysd/vim-clang-format'
 
 Plugin 'ycm-core/YouCompleteMe'
+
+Plugin 'jacoborus/tender.vim'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 " Removed plugin
 " Plugin 'preservim/nerdtree'
 
 filetype plugin indent on    " required
+syntax enable
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
@@ -56,33 +64,38 @@ filetype plugin indent on    " required
 " When started as "evim", evim.vim will already have done these settings, bail
 " out.
 
+" If you have vim >=8.0 or Neovim >= 0.1.5
+if (has("termguicolors"))
+    set termguicolors
+endif
+
 if v:progname =~? "evim"
-	finish
+    finish
 endif
 
 " Get the defaults that most users want.
 source $VIMRUNTIME/defaults.vim
 
 if has("vms")
-	set nobackup	" do not keep a backup file, use versions instead
+    set nobackup	" do not keep a backup file, use versions instead
 else
-	set backup	" keep a backup file (restore to previous version)
-	if has('persistent_undo')
-		set undofile	" keep an undo file (undo changes after closing)
-	endif
+    set backup	" keep a backup file (restore to previous version)
+    if has('persistent_undo')
+        set undofile	" keep an undo file (undo changes after closing)
+    endif
 endif
 
 if &t_Co > 2 || has("gui_running")
-	" Switch on highlighting the last used search pattern.
-	set hlsearch
+    " Switch on highlighting the last used search pattern.
+    set hlsearch
 endif
 
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx
-	au!
+    au!
 
-	" For all text files set 'textwidth' to 78 characters.
-	autocmd FileType text setlocal textwidth=78
+    " For all text files set 'textwidth' to 78 characters.
+    autocmd FileType text setlocal textwidth=78
 augroup END
 
 " Add optional packages.
@@ -92,7 +105,7 @@ augroup END
 " The ! means the package won't be loaded right away but when plugins are
 " loaded during initialization.
 if has('syntax') && has('eval')
-	packadd! matchit
+    packadd! matchit
 endif
 
 set relativenumber number
@@ -139,10 +152,11 @@ inoremap <c-l> <Esc>la
 nnoremap <c-i> gg=G
 
 set background=dark
-autocmd vimenter * colorscheme gruvbox
+colorscheme tender
+" autocmd vimenter * colorscheme tender
 
-let g:airline_theme ='light'
-let g:gruvbox_contrast_dark='hard'
+let g:airline_theme = 'light'
+" let g:gruvbox_contrast_dark='hard'
 
 vnoremap <C-c> "+y
 
@@ -171,7 +185,7 @@ vnoremap <C-c> "+y
 let g:airline_powerline_fonts = 1
 
 if !exists('g:airline_symbols')
-	let g:airline_symbols = {}
+    let g:airline_symbols = {}
 endif
 
 " Remove all trailing whitespace by pressing F5
@@ -179,14 +193,14 @@ nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " Cursor shape!!!!
 if has("autocmd")
-	au VimEnter,InsertLeave * silent execute '!echo -ne "\e[1 q"' | redraw!
-	au InsertEnter,InsertChange *
-				\ if v:insertmode == 'i' |
-				\   silent execute '!echo -ne "\e[5 q"' | redraw! |
-				\ elseif v:insertmode == 'r' |
-				\   silent execute '!echo -ne "\e[3 q"' | redraw! |
-				\ endif
-	au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
+    au VimEnter,InsertLeave * silent execute '!echo -ne "\e[1 q"' | redraw!
+    au InsertEnter,InsertChange *
+                \ if v:insertmode == 'i' |
+                \   silent execute '!echo -ne "\e[5 q"' | redraw! |
+                \ elseif v:insertmode == 'r' |
+                \   silent execute '!echo -ne "\e[3 q"' | redraw! |
+                \ endif
+    au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
 endif
 
 " load a template for a specific file
